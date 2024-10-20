@@ -820,8 +820,7 @@ class Tapper:
                                     await asyncio.sleep(delay=1)
                                     if status == 'Verification':
                                         logger.info(f"{self.session_name} "
-                                                    f"| Unable to complete a task, it is already in progress")
-                                        logger.info(f"{self.session_name} | <r>Skip video</r>")
+                                                    f"| Unable to complete a task, it is already in progress. <r>Skip video</r>")
                                         n += 1
                                         continue
                                     if tasks_list is not None and status != 'Verification':
@@ -850,9 +849,13 @@ class Tapper:
                                             if get_task_by_id is not None:
                                                 complete_task = await self.complete_task(http_client=http_client,
                                                                                          user_task_id=user_task_id)
-                                                status = complete_task['status']
-                                                logger.info(f"{self.session_name} "
-                                                            f"| Video: <r>{name}</r> | Status: <g>{status}</g>")
+
+                                                if complete_task:
+                                                    logger.info(f"{self.session_name} "
+                                                                f"| Video: <r>{name}</r> | Status: <g>{complete_task.get('status')}</g>")
+                                                else:
+                                                    logger.warning(f"{self.session_name} "
+                                                                f"| Video: <r>{name}</r> | Status: <r>Error from complete_task method.</r>")
                                                 await asyncio.sleep(delay=3)
                                                 n += 1
 
